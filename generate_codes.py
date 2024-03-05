@@ -5,6 +5,7 @@ import os
 output_dir = "qr_codes"
 os.makedirs(output_dir, exist_ok=True)
 
+# base_url = "https://sore-cyan-ostrich-fez.cyclic.app/scan?id="  # Replace with your actual server address
 base_url = "http://192.168.0.15:5900/scan?id="  # Replace with your actual server address
 
 for i in range(1, 31):

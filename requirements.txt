@@ -30,4 +30,4 @@ qrcode[pil]
 Flask
 gspread
 oauth2client
-
+discord
