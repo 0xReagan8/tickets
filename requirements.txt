@@ -1,0 +1,10 @@
+opencv-python
+gspread
+oauth2client
+
+
+qrcode[pil]
+Flask
+gspread
+oauth2client
+
