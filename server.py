@@ -28,33 +28,3 @@ if __name__ == '__main__':
     # The server listens on 192.168.0.15 at port 5900
     # uvicorn.run(app, host='192.168.0.15', port=5900)
     uvicorn.run(app, host="0.0.0.0", port=8181)
-
-
-
-
-# from flask import Flask, request, send_file
-# from datetime import datetime
-
-# app = Flask(__name__)
-
-# @app.route('/scan')
-# def scan():
-#     # Get the unique ID from the query parameter
-#     unique_id = request.args.get('id')
-    
-#     # Get the current timestamp
-#     timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    
-#     # Record the scan in a text file
-#     with open('scan_log.txt', 'a') as file:
-#         file.write(f"ID: {unique_id}, Message: Approved, Timestamp: {timestamp}\n")
-    
-#     # Specify the path to your image file
-#     image_path = './approved.png'
-    
-#     # Return the image file
-#     return send_file('./approved.png', mimetype='image/jpeg')
-
-# if __name__ == '__main__':
-#     # The server listens on 192.168.0.15 at port 5900
-#     app.run(host='192.168.0.15', port=5900, debug=True)
