@@ -1,3 +1,4 @@
+# https://app.cyclic.sh/#/deploy?tab=python
 from fastapi import FastAPI, Request
 from fastapi.responses import FileResponse
 from datetime import datetime
@@ -25,7 +26,8 @@ async def scan(request: Request):
 if __name__ == '__main__':
     import uvicorn
     # The server listens on 192.168.0.15 at port 5900
-    uvicorn.run(app, host='192.168.0.15', port=5900)
+    # uvicorn.run(app, host='192.168.0.15', port=5900)
+    uvicorn.run(app, host="0.0.0.0", port=8181)
 
 
 
