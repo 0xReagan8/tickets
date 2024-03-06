@@ -1,6 +1,6 @@
 # Tickets
 
-## endpoint
+## endpoints
 
 
 ### /scan
