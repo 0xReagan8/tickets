@@ -151,11 +151,11 @@ async def scan(request: Request):
     ticket_id = request.query_params.get('ticket_id')
     timestamp = datetime.now().strftime('%H:%M:%S %Y-%m-%d')
 
-    try:
-        with open('scan_log.txt', 'a') as file:
-            file.write(f"EVENT_ID:{event_id}, TICKET_ID: {ticket_id}, STATUS: Approved, Timestamp: {timestamp}\n")
-    except IOError as e:
-        print(f"Error writing to log file: {e}")
+    # try:
+    #     with open('scan_log.txt', 'a') as file:
+    #         file.write(f"EVENT_ID:{event_id}, TICKET_ID: {ticket_id}, STATUS: Approved, Timestamp: {timestamp}\n")
+    # except IOError as e:
+    #     print(f"Error writing to log file: {e}")
 
     embed = build_embed(ticket_id, event_id, timestamp, base_url)
     await send_discord_message(embed)
@@ -163,11 +163,11 @@ async def scan(request: Request):
     image_path = './approved.png'
     return FileResponse(image_path, media_type='image/jpeg')
 
-@app.get('/list')
-async def list_logs(request: Request):
-    try:
-        with open('scan_log.txt', 'r') as file:
-            file_contents = file.read()
-        return PlainTextResponse(file_contents)
-    except IOError as e:
-        return PlainTextResponse(f"Error reading log file: {e}", status_code=500)
+# @app.get('/list')
+# async def list_logs(request: Request):
+#     try:
+#         with open('scan_log.txt', 'r') as file:
+#             file_contents = file.read()
+#         return PlainTextResponse(file_contents)
+#     except IOError as e:
+#         return PlainTextResponse(f"Error reading log file: {e}", status_code=500)
