@@ -4,7 +4,7 @@ from datetime import datetime
 import aiohttp
 
 app = FastAPI()
-#fk;dlk;f
+
 async def send_discord_message(message):
     webhook_url = "https://discord.com/api/webhooks/1214662183452016660/1yOSpSVg3oj0gr6rQWnpKW9ncjt-TKeODdlzXE12hWSLwmNlUNOEUI21L3hmxPYCvK5u"
     async with aiohttp.ClientSession() as session:
