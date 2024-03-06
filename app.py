@@ -11,27 +11,7 @@ async def send_discord_message(message):
         webhook = message
         await session.post(webhook_url, json=webhook)
 
-def format_embed(ticket_id, event_id, timestamp, base_url ):
-    embeded_message = """{
-    "content": "😊 Ticket Scanned for Event:  🎉  EVENT NAME ✨",
-    "tts": false,
-    "embeds": [
-        {
-        "id": 652627557,
-        "title": "🚀",
-        "description": "Event ID: {event_id}\nTicket ID: {ticket_id}\nScan Time: {timestamp}\n\n{base_url}/list}",
-        "color": 1543684,
-        "fields": [],
-        "footer": {
-            "text": "** use report URL to get a text listing of all activity"
-        }
-        }
-    ],
-    "components": [],
-    "actions": {}
-    }"""
 
-    return(embeded_message)
 
 @app.get('/scan')
 async def scan(request: Request):
@@ -39,7 +19,31 @@ async def scan(request: Request):
     base_url = request.base_url
     event_id = request.query_params.get('event_id')
     ticket_id = request.query_params.get('ticket_id')
-  
+
+
+    def format_embed(ticket_id, event_id, timestamp, base_url ):
+        embeded_message = """{
+        "content": "😊 Ticket Scanned for Event:  🎉  EVENT NAME ✨",
+        "tts": false,
+        "embeds": [
+            {
+            "id": 652627557,
+            "title": "🚀",
+            "description": "Event ID: {event_id}\nTicket ID: {ticket_id}\nScan Time: {timestamp}\n\n{base_url}/list}",
+            "color": 1543684,
+            "fields": [],
+            "footer": {
+                "text": "** use report URL to get a text listing of all activity"
+            }
+            }
+        ],
+        "components": [],
+        "actions": {}
+        }"""
+
+        return(embeded_message)
+
+
     # Get the current timestamp
     timestamp = datetime.now().strftime('%H:%M:%S %Y-%m-%d')
       
