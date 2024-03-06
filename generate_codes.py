@@ -11,8 +11,7 @@ output_dir = "qr_codes"
 os.makedirs(output_dir, exist_ok=True)
 
 base_url = "https://sore-cyan-ostrich-fez.cyclic.app/scan"  # Replace with your actual server address
-# base_url = "https://sore-cyan-ostrich-fez.cyclic.app/scan?id="  # Replace with your actual server address
-# base_url = "http://192.168.0.15:5900/scan?id="  # Replace with your actual server address
+# base_url = "192.168.0.15:5800/scan"  # Replace with your actual server address
 
 for i in range(1, 31):
     # Generate QR code
@@ -36,3 +35,4 @@ for i in range(1, 31):
     img.save(f"{output_dir}/QR_Code_{i}.png")
 
 print("QR codes generated successfully.")
+
