@@ -8,6 +8,7 @@ app = FastAPI()
 
 class Item(BaseModel):
     item_id: int
+    name: str
 
 @app.get("/")
 async def root():
@@ -15,4 +16,10 @@ async def root():
 
 @app.get("/item/{item_id}")
 async def read_item(item_id: int):
-    return {"item_id": item_id}
+    return {"item_id": item_id, "name": "test"}
+
+
+
+# curl -i -XGET https://sore-cyan-ostrich-fez.cyclic.app/item/1
+# curl -i -XGET https://sore-cyan-ostrich-fez.cyclic.app/items/
+# curl -i -XPOST https://sore-cyan-ostrich-fez.cyclic.app/items/ --data '{"item_id":1,"name":"Bob"}' -H 'content-type: application/json'
