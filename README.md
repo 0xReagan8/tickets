@@ -4,20 +4,20 @@
 
 
 ### /scan
-**description:**
+*description:* 
 
-Sent from the QR code - contains the event and ticket information
+- Sent from the QR code - contains the event and ticket information
 
 <hr/>
 
 ### /list
 
-**description:**
+*description:*
 
-Gets the event record form the server
+- Gets the event record form the server
 
-**usage:**
+*usage:*
 
-https://<URL>/lists
+- https://"YOUR URL HERE"/lists
 
 <hr/>
