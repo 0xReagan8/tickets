@@ -3,6 +3,8 @@ from fastapi import FastAPI
 from fastapi.responses import FileResponse
 import aiohttp
 from pydantic import BaseModel
+import requests
+import json
 
 app = FastAPI()
 
@@ -11,49 +13,41 @@ WEBHOOK_URL = "https://discord.com/api/webhooks/1214662183452016660/1yOSpSVg3oj0
 class Item(BaseModel):
     item_id: int
 
-def build_embed(ticket_id, event_id, timestamp, base_url):
-    embed = {
-        "title": "🚀",
-        "description": f"Event ID: {event_id}\nTicket ID: {ticket_id}\nScan Time: {timestamp}\n\n{str(base_url)}/list",
-        "color": 1543684,
-        "fields": [],
-        "footer": {
-            "text": "** use report URL to get a text listing of all activity"
-        }
-    }
-    return embed
-
-async def send_discord_message(embed):
-    async with aiohttp.ClientSession() as session:
-        payload = {"embeds": [embed]}
-        async with session.post(WEBHOOK_URL, json=payload) as response:
-            if response.status == 204:
-                print("Embed sent successfully!")
-            else:
-                response_text = await response.text()
-                print(f"Failed to send embed. Status code: {response.status} - Response: {response_text}")
-
 @app.get("/")
 async def root():
     return {"message": "Hello World"}
-
 
 @app.get('/favicon.ico', include_in_schema=False)
 async def favicon():
     return FileResponse('favicon.ico')
 
-
 @app.get("/item/{item_id}")
 async def read_item(item_id: int):
-    ts = datetime.now().strftime('%H:%M:%S %Y-%m-%d')
-    embed = build_embed("test", 123, "ts", 'base_url')
-    await send_discord_message(embed)
+
+    embed = {
+        "title": "🚀",
+        "description": "Event ID: <EVENT ID>\nTicket ID: <TICKET ID>\nScan Time: <SCAN TIME>\n\nhttps://sore-cyan-ostrich-fez.cyclic.app",
+        "color": 1543684, 
+        "fields": [],
+        "footer": {
+            "text": "** use report URL to get a text listing of all activity"
+        }
+    }
+
+    # Wrap the embed in a payload as Discord expects
+    payload = {
+        "embeds": [embed],
+    }
+
+    # Convert the payload to JSON and make the POST request to the webhook URL
+    response = requests.post(WEBHOOK_URL, json=payload)
+
     return {"item_id": item_id}
+
 
 @app.get("/items/")
 async def list_items():
     return [{"item_id": 1, "name": "Foo"}, {"item_id": 2, "name": "Bar"}]
-
 
 @app.post("/items/")
 async def create_item(item: Item):
