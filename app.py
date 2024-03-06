@@ -4,13 +4,11 @@ from datetime import datetime
 import aiohttp
 
 app = FastAPI()
-
-async def send_discord_message(unique_id):
+#fk;dlk;f
+async def send_discord_message(message):
     webhook_url = "https://discord.com/api/webhooks/1214662183452016660/1yOSpSVg3oj0gr6rQWnpKW9ncjt-TKeODdlzXE12hWSLwmNlUNOEUI21L3hmxPYCvK5u"
     async with aiohttp.ClientSession() as session:
-        webhook = {
-            "content": f"ID: {unique_id} APPROVED"
-        }
+        webhook = message
         await session.post(webhook_url, json=webhook)
 
 def format_embed(ticket_id, event_id, timestamp, base_url ):
@@ -35,12 +33,10 @@ def format_embed(ticket_id, event_id, timestamp, base_url ):
 
     return(embeded_message)
 
-
-
 @app.get('/scan')
 async def scan(request: Request):
     # Get the unique ID from the query parameter
-    
+    base_url = request.base_url
     event_id = request.query_params.get('event_id')
     ticket_id = request.query_params.get('ticket_id')
   
@@ -51,8 +47,11 @@ async def scan(request: Request):
     with open(f'scan_log.txt', 'a') as file:
         file.write(f" EVENT_ID:{event_id},  TICKET_ID: {ticket_id}, STATUS: Approved, Timestamp: {timestamp}\n")
     
+    # create the embedded message
+    message = format_embed(ticket_id, event_id, timestamp, base_url )
+
     # Send the Discord message asynchronously
-    await send_discord_message(ticket_id)
+    await send_discord_message(message)
     
     # Specify the path to your image file
     image_path = './approved.png'
