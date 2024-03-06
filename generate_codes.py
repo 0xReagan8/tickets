@@ -36,3 +36,17 @@ for i in range(1, 31):
 
 print("QR codes generated successfully.")
 
+
+# https://sore-cyan-ostrich-fez.cyclic.app/scan?event_id=Some_Event_Title&ticket_id=5
+# https://sore-cyan-ostrich-fez.cyclic.app/scan?event_id=Some_Event_Title&ticket_id=6
+
+
+https://sore-cyan-ostrich-fez.cyclic.app
+Get an item: curl -i -XGET https://sore-cyan-ostrich-fez.cyclic.app/item/1
+
+Get an item: curl -i -XGET http://localhost:8181/item/1
+
+List items: curl -i -XGET http://localhost:8181/items/
+
+Post an item: curl -i -XPOST http://localhost:8181/items/ --data '{"item_id":1,"name":"Bob"}' -H 'content-type: application/json'
+

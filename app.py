@@ -22,27 +22,32 @@ async def favicon():
     return FileResponse('favicon.ico')
 
 @app.get("/item/{item_id}")
-async def read_item(item_id: int):
+async def read_item(item_id: int, event_id: str = None, ticket_id: str = None, scan_time: str = None):
+    if not WEBHOOK_URL:
+        raise HTTPException(status_code=500, detail="Webhook URL is not configured")
 
     embed = {
         "title": "🚀",
-        "description": "Event ID: <EVENT ID>\nTicket ID: <TICKET ID>\nScan Time: <SCAN TIME>\n\nhttps://sore-cyan-ostrich-fez.cyclic.app",
-        "color": 1543684, 
+        "description": f"Event ID: {event_id if event_id else 'N/A'}\n"
+                       f"Ticket ID: {ticket_id if ticket_id else 'N/A'}\n"
+                       f"Scan Time: {scan_time if scan_time else 'N/A'}\n\n"
+                       "https://sore-cyan-ostrich-fez.cyclic.app",
+        "color": 1543684,
         "fields": [],
         "footer": {
             "text": "** use report URL to get a text listing of all activity"
         }
     }
 
-    # Wrap the embed in a payload as Discord expects
-    payload = {
-        "embeds": [embed],
-    }
+    payload = {"embeds": [embed]}
 
-    # Convert the payload to JSON and make the POST request to the webhook URL
-    response = requests.post(WEBHOOK_URL, json=payload)
+    try:
+        response = requests.post(WEBHOOK_URL, json=payload)
+        response.raise_for_status()  # This will raise an exception for HTTP error responses
+    except requests.RequestException as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
-    return {"item_id": item_id}
+    return {"item_id": item_id, "message": "Notification sent successfully"}
 
 
 @app.get("/items/")
