@@ -11,7 +11,6 @@ WEBHOOK_URL = "https://discord.com/api/webhooks/1214662183452016660/1yOSpSVg3oj0
 class Item(BaseModel):
     item_id: int
 
-
 def build_embed(ticket_id, event_id, timestamp, base_url):
     embed = {
         "title": "🚀",
@@ -47,10 +46,9 @@ async def favicon():
 @app.get("/item/{item_id}")
 async def read_item(item_id: int):
     ts = datetime.now().strftime('%H:%M:%S %Y-%m-%d')
-    embed = build_embed("test", 123, ts, 'base_url')
+    embed = build_embed("test", 123, "ts", 'base_url')
     await send_discord_message(embed)
     return {"item_id": item_id}
-
 
 @app.get("/items/")
 async def list_items():
@@ -61,6 +59,16 @@ async def list_items():
 async def create_item(item: Item):
     return item
 
+
+
+Get an item: curl -i -XGET http://localhost:8181/item/1
+List items: curl -i -XGET http://localhost:8181/items/
+Post an item: curl -i -XPOST http://localhost:8181/items/ --data '{"item_id":1,"name":"Bob"}' -H 'content-type: application/json'
+
+curl -i -XGET https://sore-cyan-ostrich-fez.cyclic.app/
+curl -i -XGET https://sore-cyan-ostrich-fez.cyclic.app/item/1
+curl -i -XGET https://sore-cyan-ostrich-fez.cyclic.app/items/
+curl -i -XPOST https://sore-cyan-ostrich-fez.cyclic.app/items/ --data '{"item_id":1,"name":"Bob"}' -H 'content-type: application/json'
 
 
 
