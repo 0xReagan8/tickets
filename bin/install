@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-
 VENV_NAME=venv
 
 python -m venv "${VENV_NAME}"
