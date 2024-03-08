@@ -113,14 +113,18 @@ def generate_QR_codes(event_id, number_to_generate):
 if __name__ == "__main__":
 
     # add your event name here
-    EVENET_ID = "Test Event 2"
+    EVENET_ID = "Test Event 4"
     # add your totoal number of event tickets here
     NBR_CODE_TO_GENERATE = 10
 
-    # test is the pickle file exist
-    if not read_pickle(EVENET_ID):
-        # the pickle file does not exist - create an empty one
-        write_pickle({}, EVENET_ID)
-
+    # format the event id
     event_id = format_event_id(EVENET_ID)
+
+    # test is the pickle file exist
+    if not read_pickle(event_id):
+        # the pickle file does not exist - create an empty one
+        write_pickle({}, event_id)
+
     generate_QR_codes(event_id, NBR_CODE_TO_GENERATE)
+
+    

@@ -201,4 +201,3 @@ def list_event_page():
 if __name__ == '__main__':
     app.run(debug=True)
 
-# https://drab-gold-chimpanzee-shoe.cyclic.app//tickets/123/events/test
