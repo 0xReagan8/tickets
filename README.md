@@ -1,3 +1,5 @@
+![Alt text for the logo](/static/assets/logo_autonomous.svg)
+
 # Tickets
 
 ## endpoints / routes
