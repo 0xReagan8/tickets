@@ -141,8 +141,15 @@ def submit_request():
 
     # read in the pickel file
     data = read_pickle(event_id)
-    percent_complete = (len(data) / 30) *100 if len(data) > 1 else 0
-    
+    if data:
+        webhook_url = data['webhook_url']
+        # subtract 1 because the fisrt entry is the webhook address
+        data_len = len(data)-1
+        # get the simple percentage of tickets scaned 
+        percent_complete = (data_len/30) *100 if data_len >1 else 0
+    else:
+        return render_template('error.html', error_message='No Event data found', error_code=404), 404
+
     if data:
         # write - update data
         data[ticket_id] = {"event_id":event_id, "scan_time":scan_time}
@@ -168,7 +175,7 @@ def submit_request():
     }
 
     # Convert the payload to JSON and make the POST request to the webhook URL
-    response = requests.post(os.getenv("WEBHOOK_URL"), json=payload)
+    response = requests.post(webhook_url, json=payload)
 
     # Check the response
     if response.status_code == 204:
