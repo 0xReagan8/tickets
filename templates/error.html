@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Home</title>
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-image: url('/static/assets/bg.svg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 100vh; /* Ensure the background covers the entire viewport */
+    display: flex;
+    flex-direction: column; /* Stack children vertically */
+    align-items: center;
+  }
+  #logo {
+    width: 100%; /* Full width */
+    height: auto; /* Maintain aspect ratio */
+  }
+  .center-content {
+    flex-grow: 1; /* Take up remaining space */
+    display: flex;
+    flex-direction: column; /* Stack children vertically */
+    justify-content: center;
+    align-items: center;
+  }
+  .error-message {
+    font-size: 48px; /* Large size for "ERROR" */
+    font-weight: bold; /* Make "ERROR" bold */
+    color: black; /* Black color for "ERROR" */
+  }
+  .error-code {
+    font-size: 24px; /* Smaller size for "error code:" */
+    color: red; /* Red color for "error code:" */
+    margin-top: 20px; /* Space between "ERROR" and "error code:" */
+  }
+</style>
+</head>
+<body>
+    <div>
+        <img id="logo" src="/static/assets/logo_autonomous.svg" alt="Autonomous Logo">
+    </div>
+    <div class="center-content">
+        <div class="error-message">ERROR : {{error_message}} </div>
+        <div class="error-code">error code: {{error_code}} </div>
+    </div>
+</body>
+</html>
+ss

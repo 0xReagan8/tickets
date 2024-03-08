@@ -1,52 +1,51 @@
 import qrcode
 import os
 
-EVENT_ID="Some Event Title"
-# format the event id so we can send in the URL
-EVENT_ID= EVENT_ID.replace(' ', '_' )
+SERVER_URL = "https://drab-gold-chimpanzee-shoe.cyclic.app"
+ENDPOINT = "validate_ticket"
+BASE_URL = f"{SERVER_URL}/{ENDPOINT}"  # Replace with your actual server address
 
 
-# Ensure the directory for QR codes exists
-output_dir = "qr_codes"
-os.makedirs(output_dir, exist_ok=True)
+def format_event_id(event_id):
+    # format the event id so we can send in the URL
+    event_id_formatted =  event_id.replace(' ', '_' ).lower()
 
-base_url = "https://sore-cyan-ostrich-fez.cyclic.app/scan"  # Replace with your actual server address
-# base_url = "192.168.0.15:5800/scan"  # Replace with your actual server address
+    return(event_id_formatted)
 
-for i in range(1, 31):
-    # Generate QR code
-    qr = qrcode.QRCode(
-        version=1,
-        error_correction=qrcode.constants.ERROR_CORRECT_L,
-        box_size=10,
-        border=4,
-    )
-    
-    url = f"{base_url}?event_id={EVENT_ID}&ticket_id={i}"  # Added event_id to the URL
+def generate_QR_codes(event_id, number_to_generate):
+    # Ensure the directory for QR codes exists
+    output_dir = "qr_codes"
+    os.makedirs(output_dir, exist_ok=True)
 
-    print(url)
+    for i in range(1, number_to_generate+1):
+        # Generate QR code
+        qr = qrcode.QRCode(
+            version=1,
+            error_correction=qrcode.constants.ERROR_CORRECT_L,
+            box_size=10,
+            border=4,
+        )
 
-    qr.add_data(url)
-    qr.make(fit=True)
+        url = f"{BASE_URL}?event_id={EVENT_ID}&ticket_id={i}"  # Added event_id to the URL
 
-    img = qr.make_image(fill_color="black", back_color="white")
-    
-    # Save QR code
-    img.save(f"{output_dir}/QR_Code_{i}.png")
+        print(url)
 
-print("QR codes generated successfully.")
+        qr.add_data(url)
+        qr.make(fit=True)
 
+        img = qr.make_image(fill_color="black", back_color="white")
+        
+        # Save QR code
+        img.save(f"{output_dir}/QR_Code_{i}.png")
 
-# https://sore-cyan-ostrich-fez.cyclic.app/scan?event_id=Some_Event_Title&ticket_id=5
-# https://sore-cyan-ostrich-fez.cyclic.app/scan?event_id=Some_Event_Title&ticket_id=6
+    print("QR codes generated successfully.")
 
+if __name__ == "__main__":
 
-https://sore-cyan-ostrich-fez.cyclic.app
-Get an item: curl -i -XGET https://sore-cyan-ostrich-fez.cyclic.app/item/1
+    # add your event name here
+    EVENET_ID = "Test Event 2"
+    # add your totoal number of event tickets here
+    NBR_CODE_TO_GENERATE = 30
 
-Get an item: curl -i -XGET http://localhost:8181/item/1
-
-List items: curl -i -XGET http://localhost:8181/items/
-
-Post an item: curl -i -XPOST http://localhost:8181/items/ --data '{"item_id":1,"name":"Bob"}' -H 'content-type: application/json'
-
+    event_id = format_event_id(EVENET_ID)
+    generate_QR_codes(event_id, NBR_CODE_TO_GENERATE)
