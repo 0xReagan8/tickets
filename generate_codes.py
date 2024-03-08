@@ -1,7 +1,7 @@
 import qrcode
 import os
 
-SERVER_URL = "https://drab-gold-chimpanzee-shoe.cyclic.app"
+SERVER_URL = "https://dull-tan-hatchling-cap.cyclic.app"
 ENDPOINT = "validate_ticket"
 BASE_URL = f"{SERVER_URL}/{ENDPOINT}"  # Replace with your actual server address
 
