@@ -141,7 +141,7 @@ def submit_request():
 
     # read in the pickel file
     data = read_pickle(event_id)
-    percent_complete = (len(data) / 30) *100
+    percent_complete = (len(data) / 30) *100 if len(data) > 1 else 0
     
     if data:
         # write - update data

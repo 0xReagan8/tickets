@@ -9,7 +9,7 @@ os.chdir(os.path.join(str(os.getcwd())))
 load_dotenv(".env")
 
 
-def write_pickle_test(data:dict, event_id:str):
+def write_pickle(data:dict, event_id:str):
     import io
     import pickle
     import json
@@ -38,7 +38,7 @@ def write_pickle_test(data:dict, event_id:str):
     )
     print(f"Data uploaded to file {file_name} with version {b2_file_version.id_}")
 
-def read_pickle_test(event_id):
+def read_pickle(event_id):
     import pickle
     from b2sdk.v1 import InMemoryAccountInfo, B2Api, DownloadDestBytes
 
@@ -123,7 +123,9 @@ if __name__ =="__main__":
 
     # write_pickle_test(test, 'test_123')
 
-    data = read_pickle_test('test_123')
+    data = read_pickle('f_test_123')
+
+
     print()
     
 

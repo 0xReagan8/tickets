@@ -1,10 +1,80 @@
-import qrcode
 import os
+import pickle
+import qrcode
+from dotenv import load_dotenv
+
+os.chdir(os.path.join(str(os.getcwd())))
+
+# Load environment variables
+load_dotenv(".env")
 
 SERVER_URL = "https://dull-tan-hatchling-cap.cyclic.app"
 ENDPOINT = "validate_ticket"
 BASE_URL = f"{SERVER_URL}/{ENDPOINT}"  # Replace with your actual server address
 
+
+def write_pickle(data:dict, event_id:str):
+    import io
+    import pickle
+    import json
+    from b2sdk.v1 import InMemoryAccountInfo, B2Api
+
+
+    # dump to a bstrt
+    pickled_data = pickle.dumps(data)
+
+    # Initialize the B2 API with your account information
+    info = InMemoryAccountInfo()
+    b2_api = B2Api(info)
+    application_key_id = os.getenv("KEY_ID")
+    application_key = os.getenv("APPLICATION_KEY")
+    b2_api.authorize_account("production", application_key_id, application_key)
+
+    # Specify your bucket
+    bucket = b2_api.get_bucket_by_name(os.getenv("BUCKET_NAME"))
+
+    file_name = f"{event_id}.pck"  # The name of the file in B2
+
+    # Upload the data
+    b2_file_version = bucket.upload_bytes(
+        data_bytes=pickled_data,
+        file_name=file_name
+    )
+    print(f"Data uploaded to file {file_name} with version {b2_file_version.id_}")
+
+def read_pickle(event_id):
+    import pickle
+    from b2sdk.v1 import InMemoryAccountInfo, B2Api, DownloadDestBytes
+
+    # Initialize the B2 API with your account information
+    info = InMemoryAccountInfo()
+    b2_api = B2Api(info)
+    application_key_id = os.getenv("KEY_ID")
+    application_key = os.getenv("APPLICATION_KEY")
+    b2_api.authorize_account("production", application_key_id, application_key)
+
+    # Specify your bucket
+    bucket = b2_api.get_bucket_by_name(os.getenv("BUCKET_NAME"))
+
+    # File to download
+    file_name = f'{event_id}.pck'  # The name of the file in B2
+
+    try:
+        # Prepare a DownloadDestBytesIO object for the downloaded file
+        download_dest = DownloadDestBytes()
+
+        # Download the file into the DownloadDestBytesIO object
+        bucket.download_file_by_name(file_name, download_dest)
+
+        # Access the BytesIO object from download_dest
+        bytes_io = download_dest.get_bytes_written()
+
+        # decode the pickle
+        d = pickle.loads(bytes_io)
+
+        return(d)
+    except:
+        return(None)
 
 def format_event_id(event_id):
     # format the event id so we can send in the URL
@@ -26,7 +96,7 @@ def generate_QR_codes(event_id, number_to_generate):
             border=4,
         )
 
-        url = f"{BASE_URL}?event_id={EVENT_ID}&ticket_id={i}"  # Added event_id to the URL
+        url = f"{BASE_URL}?event_id={event_id}&ticket_id={i}"  # Added event_id to the URL
 
         print(url)
 
@@ -45,7 +115,12 @@ if __name__ == "__main__":
     # add your event name here
     EVENET_ID = "Test Event 2"
     # add your totoal number of event tickets here
-    NBR_CODE_TO_GENERATE = 30
+    NBR_CODE_TO_GENERATE = 10
+
+    # test is the pickle file exist
+    if not read_pickle(EVENET_ID):
+        # the pickle file does not exist - create an empty one
+        write_pickle({}, EVENET_ID)
 
     event_id = format_event_id(EVENET_ID)
     generate_QR_codes(event_id, NBR_CODE_TO_GENERATE)
