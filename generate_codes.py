@@ -114,8 +114,6 @@ def main(event_id, webhook_url, nbr_codes_to_generate):
     # format the event id
     event_id = format_event_id(EVENET_ID)
 
-    read_pickle(event_id)
-    
     # test is the pickle file exist
     if not read_pickle(event_id):
         # the pickle file does not exist - create an empty one
@@ -128,10 +126,10 @@ def main(event_id, webhook_url, nbr_codes_to_generate):
 if __name__ == "__main__":
     # add your event name here
     EVENET_ID = "Test Event 5"
-    # add your totoal number of event tickets here
-
+    # add your total number of event tickets here
+    NBR_CODE_TO_GENERATE = 10
+    # add your discord server webhook here
     WEBHOOK_URL="https://discord.com/api/webhooks/1214662183452016660/1yOSpSVg3oj0gr6rQWnpKW9ncjt-TKeODdlzXE12hWSLwmNlUNOEUI21L3hmxPYCvK5u"
 
-    NBR_CODE_TO_GENERATE = 10
 
     main(EVENET_ID, WEBHOOK_URL, NBR_CODE_TO_GENERATE)
