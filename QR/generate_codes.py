@@ -129,7 +129,10 @@ if __name__ == "__main__":
     # add your total number of event tickets here
     NBR_CODE_TO_GENERATE = 10
     # add your discord server webhook here
-    WEBHOOK_URL="https://discord.com/api/webhooks/1214662183452016660/1yOSpSVg3oj0gr6rQWnpKW9ncjt-TKeODdlzXE12hWSLwmNlUNOEUI21L3hmxPYCvK5u"
+    # WEBHOOK_URL="https://discord.com/api/webhooks/1214662183452016660/1yOSpSVg3oj0gr6rQWnpKW9ncjt-TKeODdlzXE12hWSLwmNlUNOEUI21L3hmxPYCvK5u"
+
+    WEBHOOK_URL="https://discord.com/api/webhooks/1215792940664881172/iisvqo4MRKvnqRyW9Xq6I92ZOU0KwMrYAILoLAYjjUhkQNt7VYpOoDkliAgKb-638onS"
 
 
     main(EVENET_ID, WEBHOOK_URL, NBR_CODE_TO_GENERATE)
+    
