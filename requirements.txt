@@ -17,3 +17,10 @@ oauth2client
 discord
 b2sdk
 python-dotenv
+
+colorama
+imgkit
+pdfkit
+WeasyPrint 
+selenium
+webdriver_manager

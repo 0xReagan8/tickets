@@ -44,3 +44,18 @@
 
 <hr/>
 
+
+## generate events and tickets 
+
+Note: The ticket generator uses [geckodriver](https://github.com/mozilla/geckodriver/releases) you can download it from this link.
+
+1. create a .etc folder
+2. Download gecko driver into ./etc/geckodriver
+3. modify `./QR/assets/event_data.json` with your data
+4. modify ./QR/generate_codes.py  `__main__` :
+    
+    - EVENET_ID = `"Your Event"`
+    
+    - NBR_CODE_TO_GENERATE = `YOUR_NUMBER_OF_TICKETS`
+
+    - WEBHOOK_URL= `"YOUR_WEBHOOK_ADDRESS"`

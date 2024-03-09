@@ -1,6 +1,8 @@
 import os
 import pickle
 import qrcode
+import render_qr_codes
+from colorama import Fore, Style
 from dotenv import load_dotenv
 
 os.chdir(os.path.join(str(os.getcwd())))
@@ -98,7 +100,10 @@ def generate_QR_codes(event_id, number_to_generate):
 
         url = f"{BASE_URL}?event_id={event_id}&ticket_id={i}"  # Added event_id to the URL
 
-        print(url)
+        print(f""" 
+        {Fore.LIGHTBLACK_EX} 🐟 rendering ticket: {i} {Style.RESET_ALL}
+        {Fore.LIGHTCYAN_EX} 🐠🐠 encoded URL: {Style.RESET_ALL} {url} {Fore.WHITE} {Style.RESET_ALL}
+        """) 
 
         qr.add_data(url)
         qr.make(fit=True)
@@ -126,13 +131,16 @@ def main(event_id, webhook_url, nbr_codes_to_generate):
 if __name__ == "__main__":
     # add your event name here
     EVENET_ID = "Test Event 5"
-    # add your total number of event tickets here
-    NBR_CODE_TO_GENERATE = 10
-    # add your discord server webhook here
-    # WEBHOOK_URL="https://discord.com/api/webhooks/1214662183452016660/1yOSpSVg3oj0gr6rQWnpKW9ncjt-TKeODdlzXE12hWSLwmNlUNOEUI21L3hmxPYCvK5u"
 
+    # add your total number of event tickets here
+    NBR_CODE_TO_GENERATE = 5
+
+    # add your discord server webhook here
     WEBHOOK_URL="https://discord.com/api/webhooks/1215792940664881172/iisvqo4MRKvnqRyW9Xq6I92ZOU0KwMrYAILoLAYjjUhkQNt7VYpOoDkliAgKb-638onS"
 
-
+    # generate the codes
     main(EVENET_ID, WEBHOOK_URL, NBR_CODE_TO_GENERATE)
+
+    # render the tickets
+    render_qr_codes.render_tickets()
     
