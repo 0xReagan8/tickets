@@ -1,9 +1,17 @@
+import sys
 import os
-import pickle
+import shutil
 import qrcode
 import render_qr_codes
+from datetime import datetime, timezone
 from colorama import Fore, Style
 from dotenv import load_dotenv
+import uuid
+
+sys.path.append(os.getcwd())
+
+from storage.cloudStorage import B2Storage
+from sendOwl.sendOwlProduct import SendOwlProduct
 
 os.chdir(os.path.join(str(os.getcwd())))
 
@@ -20,7 +28,6 @@ def write_pickle(data:dict, event_id:str):
     import pickle
     import json
     from b2sdk.v1 import InMemoryAccountInfo, B2Api
-
 
     # dump to a bstrt
     pickled_data = pickle.dumps(data)
@@ -84,12 +91,27 @@ def format_event_id(event_id):
 
     return(event_id_formatted)
 
-def generate_QR_codes(event_id, number_to_generate):
+def generate_QR_codes(event_name, event_location, event_date, event_time, event_price, nbr_codes_to_generate, webhook_url):
     # Ensure the directory for QR codes exists
     output_dir = "qr_codes"
+    ticket_output_dir="/home/sbellina/jobs/tickets/tickets_output/"
     os.makedirs(output_dir, exist_ok=True)
 
-    for i in range(1, number_to_generate+1):
+    # remove old generated codes
+    for filename in os.listdir(output_dir):
+        file_path = os.path.join(output_dir, filename)
+        try:
+            if os.path.isfile(file_path) or os.path.islink(file_path):
+                os.unlink(file_path)
+            elif os.path.isdir(file_path):
+                shutil.rmtree(file_path)
+        except Exception as e:
+            print(f'Failed to delete {file_path}. Reason: {e}')
+
+    # dictionary to hold upload and rendering data
+    data = []
+
+    for i in range(1, nbr_codes_to_generate+1):
         # Generate QR code
         qr = qrcode.QRCode(
             version=1,
@@ -98,7 +120,7 @@ def generate_QR_codes(event_id, number_to_generate):
             border=4,
         )
 
-        url = f"{BASE_URL}?event_id={event_id}&ticket_id={i}"  # Added event_id to the URL
+        url = f"{BASE_URL}?event_id={event_name}&ticket_id={i}"  # Added event_id to the URL
 
         print(f""" 
         {Fore.LIGHTBLACK_EX} 🐟 rendering ticket: {i} {Style.RESET_ALL}
@@ -113,34 +135,78 @@ def generate_QR_codes(event_id, number_to_generate):
         # Save QR code
         img.save(f"{output_dir}/QR_Code_{i}.png")
 
+        data.append(
+            {
+                'id':uuid.uuid4(), 
+                'ticket_number':i, 
+                'event_id':event_name,
+                'event_location':event_location,
+                'event_date':event_date,
+                'event_time':event_time,
+                'event_price':event_price,
+                'attachment':os.path.join(ticket_output_dir, f"QR_Code_{i}.pdf"),
+                'created_at':datetime.now(timezone.utc),
+                'webhook_url':webhook_url
+                    }
+        )
+
     print("QR codes generated successfully.")
+    return(data)
 
-def main(event_id, webhook_url, nbr_codes_to_generate):
+def main(event_name, event_location, event_date, event_time, event_price, webhook_url, nbr_codes_to_generate):
     # format the event id
-    event_id = format_event_id(EVENET_ID)
+    event_name = format_event_id(EVENET_NAME)
 
-    # test is the pickle file exist
-    if not read_pickle(event_id):
-        # the pickle file does not exist - create an empty one
-        # the first entry has the webhook url of the discord server
-        write_pickle({"webhook_url":webhook_url}, event_id)
+    # # test is the pickle file exist
+    # if not B2Storage.read_pickle(event_name):
+    #     # the pickle file does not exist - create an empty one
+    #     # the first entry has the webhook url of the discord server
+    #     B2Storage.write_pickle({"webhook_url":webhook_url}, event_name)
+        
+    # generate the codes and product data
+    # NOTE: product data genetred is used to sendOwl 
+    product_data = generate_QR_codes(event_name, event_location, event_date, event_time, event_price, nbr_codes_to_generate, webhook_url)
 
-    generate_QR_codes(event_id, nbr_codes_to_generate)
+    try:    
+        # write the product data to storage
+        B2Storage.write_pickle(product_data, event_name)
+    except Exception as e:
+        print(f"""💩{Fore.LIGHTRED_EX} ERR: cold not write to storage: {Style.RESET_ALL}
+              {Fore.LIGHTBLACK_EX} {e} {Style.RESET_ALL} 
+              💩""")
+
+    # render the tickets
+    render_qr_codes.render_tickets(event_name, event_location, event_date, event_time)
+
+    # if not DEBUG_MODE:
+    #     #create the sendOwl Product object
+    #     sendOwlProduct = SendOwlProduct()
+
+    #     for data in product_data:
+    #         sendOwlProduct.create_product(data)
+
+    print()
 
 
 if __name__ == "__main__":
-    # add your event name here
-    EVENET_ID = "Test Event 5"
+    # for testing  - if true  - products are not sent to sendOwl
+    DEBUG_MODE=False
 
+    # add your event name here
+    EVENET_NAME = "CLASSIC PUNK PARTY" 
+    # add your event's location address here
+    EVENT_LOCATION = "Otra Historia, Estomba 851"
+    # add your date
+    EVENT_DATE = "March 16 2024"
+    # add your time
+    EVENT_TIME = "6:00 PM - 6:00 AM"
     # add your total number of event tickets here
-    NBR_CODE_TO_GENERATE = 5
+    EVENT_PRICE=10.00
+
+    NBR_CODE_TO_GENERATE = 2
 
     # add your discord server webhook here
     WEBHOOK_URL="https://discord.com/api/webhooks/1215792940664881172/iisvqo4MRKvnqRyW9Xq6I92ZOU0KwMrYAILoLAYjjUhkQNt7VYpOoDkliAgKb-638onS"
 
     # generate the codes
-    main(EVENET_ID, WEBHOOK_URL, NBR_CODE_TO_GENERATE)
-
-    # render the tickets
-    render_qr_codes.render_tickets()
-    
+    main(EVENET_NAME, EVENT_LOCATION, EVENT_DATE, EVENT_TIME, EVENT_PRICE, WEBHOOK_URL, NBR_CODE_TO_GENERATE)
