@@ -113,7 +113,6 @@ def list_bucket():
 
 
 if __name__ =="__main__":
-
     # list_bucket()
     
     # test = {
@@ -123,8 +122,6 @@ if __name__ =="__main__":
 
     # write_pickle_test(test, 'test_123')
 
-    data = read_pickle('f_test_123')
-
-
+    data = read_pickle('classic_punk_party')
     print()
     

@@ -21,6 +21,7 @@ python-dotenv
 colorama
 imgkit
 pdfkit
-WeasyPrint 
 selenium
 webdriver_manager
+discord
+pillow

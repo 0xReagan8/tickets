@@ -4,81 +4,143 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Event Ticket</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
 <style>
-  body, html {
+  html, body {
     margin: 0;
     padding: 0;
     height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-  .background {
-    background-image: url("{{ bg_image }}");
+    background-image: url('../static/assets/bg.png');
     background-size: cover;
     background-position: center;
-    position: fixed; /* Use fixed to cover the entire screen at all times */
+  }
+  .logo-container {
+    background-color: black;
+    text-align: center;
+    position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
+    right: 0;
   }
-  .content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 50px 0; /* Add some padding at the top and bottom */
+
+  .logo-container img {
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    padding: 10px;
+    display: block;
+    margin: auto;
   }
-  .logo {
-    width: 70%;
-    max-width: 300px; /* Adjust based on your logo size */
-    margin-bottom: 20px; /* Space below the logo */
-  }
-  .qr-code img {
-    max-width: 300px; /* Adjust based on your QR code size */
-    margin-bottom: 20px; /* Space below the QR code */
-  }
-  .event-logo img {
-    max-width: 150px; /* Adjust based on your event logo size */
-    margin-bottom: 20px; /* Space below the event logo */
-  }
-  .event-info {
+
+  .qr-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50%; /* Responsive width */
+    max-width: 800px; /* Maximum width */
     text-align: center;
   }
+
+  .qr-container img {
+    width: 80%;
+    height: auto;
+  }
+
+  .event-time-divider {
+    border-bottom: 5px dashed rgb(0, 0, 0);
+    margin-top: 20px;
+  }
+
   .event-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 6vw; /* Dynamic size */
     font-weight: bold;
-    margin-bottom: 10px; /* Space below the event title */
+    text-align: left;
   }
-  .footer {
+
+  .event-location {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 5vw; /* Dynamic size */
+    font-weight: normal;
+    text-align: left;
+  }
+
+  .event-location-directions {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 5vw; /* Dynamic size */
+    font-weight: bold;
+    text-align: left;
+  }
+
+  .event-date {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 5vw; /* Dynamic size */
+    font-weight: normal;
+    text-align: left;
+  }
+
+  .event-admin-quantity {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 6vw; /* Dynamic size */
+    font-weight: bold;
     text-align: center;
-    padding: 10px 0;
-    background: rgba(0, 0, 0, 0.5);
-    color: white;
   }
+
+  .lion-lock-img {
+    max-height: 100px;
+    max-width: 100px;
+    width: auto; /* Maintain aspect ratio */
+  }
+
+  .event-encryption-code {
+  font-family: monospace;
+  font-size: 2vw; /* Dynamic size */
+  font-weight: no;
+  text-align: center;
+  text-decoration: underline;
+  margin-right: 10px; /* Add some space between the text and the image */
+}
+.flex-container {
+  display: flex;
+  align-items: center; /* Align items vertically in the center */
+  justify-content: center; /* Center items horizontally if needed */
+}
+.white-background {
+  background-color: white;
+  padding: 20px; /* Example padding value, adjust as needed */
+}
+
 </style>
 </head>
 <body>
 
-<div class="background"></div>
+<div class="logo-container">
+  <img src="../static/assets/autonomous_logo.png" alt="Logo">
+</div>
 
-<div class="content">
-    <div class="logo">
-        {{ logo_image }}
-    </div>
-  <div class="qr-code">
-    <img src="{{ qr_code_image }}">
-  </div>
-  <div class="event-logo">
-    <img src="{{ event_logo }}">
-  </div>
-  <div class="event-info">
+<div class="qr-container">
+  <img src="../qr_codes/QR_Code_1.png" alt="QR Code">
+  <img src="../static/assets/event_time.png" alt="Event Time">
+  <div class="event-time-divider"></div>  
+
+  <div class="white-background">
     <div class="event-title">{{ event_title }}</div>
-    <div class="event-time">{{ event_date }}</div>
-    <div class="event-time">{{ event_time }}</div>
+    <div class="event-location">Location:</div>
+    <div class="event-location-directions">{{ event_location }}</div>
+    <div class="event-time-divider"></div>
+    <div class="event-date">{{ event_date }}</div>
+    <div class="event-time-divider"></div>
+    <div class="event-admin-quantity">ADMIT ONE</div>
+
+    <!-- <div class="flex-container"> -->
+      <div class="event-encryption-code">{{lion_lock_code}}</div>
+      <img src="../static/assets/lion_lock.png" alt="Lion Lock" class="lion-lock-img">
+    <!-- </div>     -->
+    
+    <div class="event-time-divider"></div>  
   </div>
+  
 </div>
 
 </body>

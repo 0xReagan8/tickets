@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Event Ticket</title>
+<style>
+  body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .background {
+    background-image: url("{{ bg_image }}");
+    background-size: cover;
+    background-position: center;
+    position: fixed; /* Use fixed to cover the entire screen at all times */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+  }
+  .content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 50px 0; /* Add some padding at the top and bottom */
+  }
+  .logo {
+    width: 70%;
+    max-width: 300px; /* Adjust based on your logo size */
+    margin-bottom: 20px; /* Space below the logo */
+  }
+  .qr-code img {
+    max-width: 300px; /* Adjust based on your QR code size */
+    margin-bottom: 20px; /* Space below the QR code */
+  }
+  .event-logo img {
+    max-width: 150px; /* Adjust based on your event logo size */
+    margin-bottom: 20px; /* Space below the event logo */
+  }
+  .event-info {
+    text-align: center;
+  }
+  .event-title {
+    font-weight: bold;
+    margin-bottom: 10px; /* Space below the event title */
+  }
+  .event-location {
+    font-weight: bold;
+    margin-bottom: 10px; /* Space below the event title */
+  }
+  .footer {
+    text-align: center;
+    padding: 10px 0;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+  }
+</style>
+</head>
+<body>
+
+<div class="background"></div>
+
+<div class="content">
+    <div class="logo">
+        {{ logo_image }}
+    </div>
+  <div class="qr-code">
+    <img src="{{ qr_code_image }}">
+  </div>
+  <div class="event-logo">
+    <img src="{{ event_logo }}">
+  </div>
+  <div class="event-info">
+    <div class="event-title">{{ event_title }}</div>
+    <div class="event-title">{{ event_location }}</div>
+    <div class="event-time">{{ event_date }}</div>
+    <div class="event-time">{{ event_time }}</div>
+  </div>
+</div>
+
+</body>
+</html>
