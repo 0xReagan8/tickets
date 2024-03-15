@@ -52,7 +52,7 @@
 
   #processing {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 5vw; /* Dynamic size */
+    font-size: 4vw; /* Dynamic size */
     font-weight: bold;
     color: black;
     animation: blink 1s infinite;
@@ -100,10 +100,10 @@
   
   <div class="content">
     <div class="verification_success">
-        <h1>Event Status</h1>
+        <h1>{{event_status}}</h1>
     </div>
 
-    <div id="processing"> {{ hours }}: {{ minute }} : {{ seconds }} </div>
+    <div id="processing"> hours:{{ hours }} | minutes:{{ minute }} | seconds:{{ seconds }} </div>
 
     <div class="data">
         <p>Event ID: {{ event_id }}</p>
