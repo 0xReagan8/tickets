@@ -1,7 +1,6 @@
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 import requests
-# import json
 from flask import Flask, Response, request, render_template, render_template_string
 
 
@@ -147,44 +146,89 @@ def submit_request():
         data_len = len(data)-1
         # get the simple percentage of tickets scaned 
         percent_complete = (data_len/30) *100 if data_len >1 else 0
+
+    # -------- insert time logic here
+        # event durration
+        duration = data[0]['event_duration']
+
+        # Get the current date and time, then subtract 3 hours
+        now = datetime.now() - timedelta(hours=3)
+
+        # Target date and time for comparison
+        target_date_start = datetime.strptime(data[0]['event_date'], '%B %d %Y')
+        target_time_start = datetime.strptime(f"{data[0]['event_date']} {data[0]['event_start_time']}", 
+                                            '%B %d %Y %I:%M %p')
+        target_time_end = target_time_start + timedelta(
+                                                    days=duration['days'] , 
+                                                    hours=duration['hours'],
+                                                    minutes=duration['minutes']
+                                                    )
+
+        if now < target_date_start:
+            # Calculate difference
+            delta = target_date_start - now
+            days = delta.days
+            hours, remainder = divmod(delta.seconds, 3600)
+            minutes, seconds = divmod(remainder, 60)
+            return render_template('event_status.html', event_status='Comming UP!', 
+                                days=days,
+                                hours=hours,
+                                minutes=minutes,
+                                event_id=data[0]['event_id'].replace("_", " ").title()
+                                )
+            # print(f"BEFORE - {days} days, {hours} hours and {minutes} minutes until the start")
+        elif now > target_time_end:
+            return render_template('event_status.html', event_status='Event Happened!', 
+                                    days="-",
+                                    hours="-",
+                                    minutes="-",
+                                    event_id=f"happened on: {data[0]['event_date']} {data[0]['event_start_time']}"
+                                    )
+            # print("EVENT HAS HAPPENED")
+        else:
+            if target_time_start <= now <= target_time_end:
+                
+                # -------------------------- add validate code here 
+
+                if data:
+                    # write - update data
+                    data[ticket_id] = {"event_id":event_id, "scan_time":scan_time}
+                    
+                else:
+                    data = {ticket_id: {"event_id":event_id, "scan_time":scan_time}}
+
+                write_pickle(data, event_id)
+
+                embed = {
+                    "title": "🚀",
+                    "description": f"Event ID: {event_id}\nTicket ID: {ticket_id}\nScan Time: {scan_time}\n\n{os.getenv('SERVER_URL')}",
+                    "color": 1543684, 
+                    "fields": [],
+                    "footer": {
+                        "text": "** use report URL to get a text listing of all activity"
+                    }
+                }
+
+                # Wrap the embed in a payload as Discord expects
+                payload = {
+                    "embeds": [embed],
+                }
+
+                # Convert the payload to JSON and make the POST request to the webhook URL
+                response = requests.post(webhook_url, json=payload)
+
+                # Check the response
+                if response.status_code == 204:
+                    print("Embed sent successfully!")
+                else:
+                    print(f"Failed to send embed. Status code: {response.status_code} - Response: {response.text}")
+
+
     else:
         return render_template('error.html', error_message='No Event data found', error_code=404), 404
 
-    if data:
-        # write - update data
-        data[ticket_id] = {"event_id":event_id, "scan_time":scan_time}
-        
-    else:
-        data = {ticket_id: {"event_id":event_id, "scan_time":scan_time}}
+    
 
-    write_pickle(data, event_id)
-
-    embed = {
-        "title": "🚀",
-        "description": f"Event ID: {event_id}\nTicket ID: {ticket_id}\nScan Time: {scan_time}\n\n{os.getenv('SERVER_URL')}",
-        "color": 1543684, 
-        "fields": [],
-        "footer": {
-            "text": "** use report URL to get a text listing of all activity"
-        }
-    }
-
-    # Wrap the embed in a payload as Discord expects
-    payload = {
-        "embeds": [embed],
-    }
-
-    # Convert the payload to JSON and make the POST request to the webhook URL
-    response = requests.post(webhook_url, json=payload)
-
-    # Check the response
-    if response.status_code == 204:
-        print("Embed sent successfully!")
-    else:
-        print(f"Failed to send embed. Status code: {response.status_code} - Response: {response.text}")
-
-
-    return render_template('verified.html', event_id=event_id, ticket_id=ticket_id, scan_time=scan_time, percent_complete=percent_complete)
 
 @app.route('/list_events', methods=['GET'])
 def list_events_page():    
@@ -202,7 +246,6 @@ def list_event_page():
     percent_complete = (len(data) / 30) *100
     
     return render_template('list_event.html', data=data, percent_complete=percent_complete)
-
 
 
 if __name__ == '__main__':
