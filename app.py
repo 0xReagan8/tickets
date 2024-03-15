@@ -115,7 +115,7 @@ def internal_server_error(e):
 
 @app.route('/')
 def home():
-    return render_template('home.html')
+    return render_template(f'home.html {datetime.now().strftime('%I:%M %p')}')
 
 @app.route('/validate_ticket')
 def working_page():
