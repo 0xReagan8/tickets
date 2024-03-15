@@ -187,13 +187,10 @@ def submit_request():
             # print("EVENT HAS HAPPENED")
         else:
             if target_time_start <= now <= target_time_end:
-                
                 # -------------------------- add validate code here 
-
                 if data:
                     # write - update data
                     data[ticket_id] = {"event_id":event_id, "scan_time":scan_time}
-                    
                 else:
                     data = {ticket_id: {"event_id":event_id, "scan_time":scan_time}}
 
@@ -222,12 +219,8 @@ def submit_request():
                     print("Embed sent successfully!")
                 else:
                     print(f"Failed to send embed. Status code: {response.status_code} - Response: {response.text}")
-
-
     else:
         return render_template('error.html', error_message='No Event data found', error_code=404), 404
-
-    
 
 
 @app.route('/list_events', methods=['GET'])
@@ -250,4 +243,3 @@ def list_event_page():
 
 if __name__ == '__main__':
     app.run(debug=True)
-
