@@ -115,7 +115,7 @@ def internal_server_error(e):
 
 @app.route('/')
 def home():
-    return render_template("home.html", server_time=datetime.now().strftime('%I:%M %p'))
+    return render_template("home.html", datetime.now().strftime('%I:%M %p'))
 
 @app.route('/validate_ticket')
 def working_page():
@@ -142,7 +142,7 @@ def submit_request():
     # read in the pickel file
     data = read_pickle(event_id)
     if data:
-        webhook_url = data['webhook_url']
+        webhook_url = data[0]['webhook_url']
         # subtract 1 because the fisrt entry is the webhook address
         data_len = len(data)-1
         # get the simple percentage of tickets scaned 
