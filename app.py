@@ -185,7 +185,12 @@ def submit_request():
         elif now > target_time_end:
             logger.info("EVENT HAS HAPPENED")
         else:
-            logger.info("EVENT HAPPENEING")
+            if target_time_start <= now <= target_time_end: 
+                logger.info("EVENT HAPPENEING")
+            elif now < target_time_start:
+                logger.info("PRINT TIME TO EVENT START")
+            else:
+                logger.info("EVENT HAS HAPPENED")
 
 
     embed = {
