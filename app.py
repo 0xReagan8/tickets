@@ -162,7 +162,7 @@ def submit_request():
                                                     days = int(duration['days']), 
                                                     hours = int(duration['days']),
                                                     minutes = int(duration['days'])
-                                                    )
+                                                    ),200
 
         if now < target_date_start:
             # Calculate difference
@@ -183,7 +183,7 @@ def submit_request():
                                     hours="-",
                                     minutes="-",
                                     event_id=f"happened on: {data[0]['event_date']} {data[0]['event_start_time']}"
-                                    )
+                                    ),200
             # print("EVENT HAS HAPPENED")
         else:
             if target_time_start <= now <= target_time_end:
