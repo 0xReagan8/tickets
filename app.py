@@ -185,40 +185,49 @@ def submit_request():
         elif now > target_time_end:
             logger.info("EVENT HAS HAPPENED")
         else:
-            if target_time_start <= now <= target_time_end: 
-                logger.info("EVENT HAPPENEING")
+            if target_time_start <= now and now <= target_time_end: 
+                # -------------------------- add validate code here [BEGIN]
+                embed = {
+                    "title": "🚀",
+                    "description": f"Event ID: {event_id}\nTicket ID: {ticket_id}\nScan Time: {scan_time}\n\n{os.getenv('SERVER_URL')}",
+                    "color": 1543684, 
+                    "fields": [],
+                    "footer": {
+                        "text": "** use report URL to get a text listing of all activity"
+                    }
+                }
+
+                # Wrap the embed in a payload as Discord expects
+                payload = {
+                    "embeds": [embed],
+                }
+
+                # Convert the payload to JSON and make the POST request to the webhook URL
+                response = requests.post(webhook_url, json=payload)
+
+                # Check the response
+                if response.status_code == 204:
+                    print("Embed sent successfully!")
+                else:
+                    print(f"Failed to send embed. Status code: {response.status_code} - Response: {response.text}")
+
+
+                return render_template('verified.html', event_id=event_id, ticket_id=ticket_id, scan_time=scan_time, percent_complete=percent_complete)
+                # -------------------------- add validate code here [END]
+
+                logger.log("HAPPENING")
             elif now < target_time_start:
-                logger.info("PRINT TIME TO EVENT START")
+                # Calculate difference
+                delta = target_time_start - now
+                hours, remainder = divmod(delta.seconds, 3600)
+                minutes, seconds = divmod(remainder, 60)
+
+                logger.log(f"{hours} hours and {minutes} minutes until the event")
             else:
-                logger.info("EVENT HAS HAPPENED")
+                logger.log("EVENT HAS HAPPENED")
 
 
-    embed = {
-        "title": "🚀",
-        "description": f"Event ID: {event_id}\nTicket ID: {ticket_id}\nScan Time: {scan_time}\n\n{os.getenv('SERVER_URL')}",
-        "color": 1543684, 
-        "fields": [],
-        "footer": {
-            "text": "** use report URL to get a text listing of all activity"
-        }
-    }
 
-    # Wrap the embed in a payload as Discord expects
-    payload = {
-        "embeds": [embed],
-    }
-
-    # Convert the payload to JSON and make the POST request to the webhook URL
-    response = requests.post(webhook_url, json=payload)
-
-    # Check the response
-    if response.status_code == 204:
-        print("Embed sent successfully!")
-    else:
-        print(f"Failed to send embed. Status code: {response.status_code} - Response: {response.text}")
-
-
-    return render_template('verified.html', event_id=event_id, ticket_id=ticket_id, scan_time=scan_time, percent_complete=percent_complete)
 
 @app.route('/list_events', methods=['GET'])
 def list_events_page():    
