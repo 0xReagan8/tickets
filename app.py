@@ -159,72 +159,103 @@ def submit_request():
         data[int(ticket_id)]['percent_complete'] = percent_complete
         write_pickle(data, event_id)
 
-        # Get the current date and time, then subtract 3 hours  
-        now = datetime.now() - timedelta(hours=3)
+        embed = {
+            "title": "🚀",
+            "description": f"Event ID: {event_id}\nTicket ID: {ticket_id}\nScan Time: {scan_time}\n\n{os.getenv('SERVER_URL')}",
+            "color": 1543684, 
+            "fields": [],
+            "footer": {
+                "text": "** use report URL to get a text listing of all activity"
+            }
+        }
 
-        # Target date and time for comparison
-        target_date_start = datetime.strptime(data[0]['event_date'], '%B %d %Y')
-        target_time_start = datetime.strptime(f"{data[0]['event_date']} {data[0]['event_start_time']}", 
-                                            '%B %d %Y %I:%M %p')
-        target_time_end = target_time_start + timedelta(
-                                                    days = int(data[0]['event_duration']['days']), 
-                                                    hours = int(data[0]['event_duration']['hours']),
-                                                    minutes = int(data[0]['event_duration']['minutes'])
-                                                    )
-        logger.info(f"target_date_start: {type(target_date_start)}")
-        logger.info(f"target_time_start: {type(target_time_start)}")
-        logger.info(f"target_time_end: {type(target_time_end)}")
+        # Wrap the embed in a payload as Discord expects
+        payload = {
+            "embeds": [embed],
+        }
 
-        if now < target_date_start:
-            # Calculate difference
-            delta = now - target_date_start
-            days = delta.days
-            hours, remainder = divmod(delta.seconds, 3600)
-            minutes, seconds = divmod(remainder, 60)
-            logger.info(f"BEFORE - {days} days, {hours} hours and {minutes} minutes until the start")
-        elif now > target_time_end:
-            logger.info("EVENT HAS HAPPENED")
+        # Convert the payload to JSON and make the POST request to the webhook URL
+        response = requests.post(webhook_url, json=payload)
+
+        # Check the response
+        if response.status_code == 204:
+            print("Embed sent successfully!")
         else:
-            if target_time_start <= now and now <= target_time_end: 
-                # -------------------------- add validate code here [BEGIN]
-                embed = {
-                    "title": "🚀",
-                    "description": f"Event ID: {event_id}\nTicket ID: {ticket_id}\nScan Time: {scan_time}\n\n{os.getenv('SERVER_URL')}",
-                    "color": 1543684, 
-                    "fields": [],
-                    "footer": {
-                        "text": "** use report URL to get a text listing of all activity"
-                    }
-                }
-
-                # Wrap the embed in a payload as Discord expects
-                payload = {
-                    "embeds": [embed],
-                }
-
-                # Convert the payload to JSON and make the POST request to the webhook URL
-                response = requests.post(webhook_url, json=payload)
-
-                # Check the response
-                if response.status_code == 204:
-                    print("Embed sent successfully!")
-                else:
-                    print(f"Failed to send embed. Status code: {response.status_code} - Response: {response.text}")
+            print(f"Failed to send embed. Status code: {response.status_code} - Response: {response.text}")
 
 
-                return render_template('verified.html', event_id=event_id, ticket_id=ticket_id, scan_time=scan_time, percent_complete=percent_complete)
-                # -------------------------- add validate code here [END]
+        return render_template('verified.html', event_id=event_id, ticket_id=ticket_id, scan_time=scan_time, percent_complete=percent_complete)
 
-                logger.log("HAPPENING")
-            elif now < target_time_start:
-                # Calculate difference
-                delta = target_time_start - now
-                hours, remainder = divmod(delta.seconds, 3600)
-                minutes, seconds = divmod(remainder, 60)
 
-                logger.log(f"{hours} hours and {minutes} minutes until the event")
-            else:
-                logger.log("EVENT HAS HAPPENED")
+        # # Get the current date and time, then subtract 3 hours  
+        # now = datetime.now() - timedelta(hours=3)
+
+        # # Target date and time for comparison
+        # target_date_start = datetime.strptime(data[0]['event_date'], '%B %d %Y')
+        # target_time_start = datetime.strptime(f"{data[0]['event_date']} {data[0]['event_start_time']}", 
+        #                                     '%B %d %Y %I:%M %p')
+        # target_time_end = target_time_start + timedelta(
+        #                                             days = int(data[0]['event_duration']['days']), 
+        #                                             hours = int(data[0]['event_duration']['hours']),
+        #                                             minutes = int(data[0]['event_duration']['minutes'])
+        #                                             )
+        # logger.info(f"target_date_start: {type(target_date_start)}")
+        # logger.info(f"target_time_start: {type(target_time_start)}")
+        # logger.info(f"target_time_end: {type(target_time_end)}")
+
+        # if now < target_date_start:
+        #     # Calculate difference
+        #     delta = now - target_date_start
+        #     days = delta.days
+        #     hours, remainder = divmod(delta.seconds, 3600)
+        #     minutes, seconds = divmod(remainder, 60)
+        #     logger.info(f"BEFORE - {days} days, {hours} hours and {minutes} minutes until the start")
+        # elif now > target_time_end:
+        #     logger.info("EVENT HAS HAPPENED")
+        # else:
+        #     if target_time_start <= now and now <= target_time_end: 
+        #         # -------------------------- add validate code here [BEGIN]
+        #         embed = {
+        #             "title": "🚀",
+        #             "description": f"Event ID: {event_id}\nTicket ID: {ticket_id}\nScan Time: {scan_time}\n\n{os.getenv('SERVER_URL')}",
+        #             "color": 1543684, 
+        #             "fields": [],
+        #             "footer": {
+        #                 "text": "** use report URL to get a text listing of all activity"
+        #             }
+        #         }
+
+        #         # Wrap the embed in a payload as Discord expects
+        #         payload = {
+        #             "embeds": [embed],
+        #         }
+
+        #         # Convert the payload to JSON and make the POST request to the webhook URL
+        #         response = requests.post(webhook_url, json=payload)
+
+        #         # Check the response
+        #         if response.status_code == 204:
+        #             print("Embed sent successfully!")
+        #         else:
+        #             print(f"Failed to send embed. Status code: {response.status_code} - Response: {response.text}")
+
+
+        #         return render_template('verified.html', event_id=event_id, ticket_id=ticket_id, scan_time=scan_time, percent_complete=percent_complete)
+        #         # -------------------------- add validate code here [END]
+
+        #         logger.log("HAPPENING")
+        #     elif now < target_time_start:
+        #         # Calculate difference
+        #         delta = target_time_start - now
+        #         hours, remainder = divmod(delta.seconds, 3600)
+        #         minutes, seconds = divmod(remainder, 60)
+
+        #         logger.log(f"{hours} hours and {minutes} minutes until the event")
+        #     else:
+        #         logger.log("EVENT HAS HAPPENED")
+
+
+
 
 
 
