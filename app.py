@@ -159,9 +159,9 @@ def submit_request():
         target_time_start = datetime.strptime(f"{data[0]['event_date']} {data[0]['event_start_time']}", 
                                             '%B %d %Y %I:%M %p')
         target_time_end = target_time_start + timedelta(
-                                                    days=duration['days'] , 
-                                                    hours=duration['hours'],
-                                                    minutes=duration['minutes']
+                                                    days = 0 if int(duration['days']) == 0 or int(duration['days']) == "" else int(duration['days']) , 
+                                                    hours = 0 if int(duration['hours'])  == 0 or int(duration['hours']) == "" else int(duration['hours']) ,
+                                                    minutes = 0 if int(duration['minutes']) == 0 or int(duration['minutes']) == "" else int(duration['minutes'])
                                                     )
 
         if now < target_date_start:
@@ -171,9 +171,9 @@ def submit_request():
             hours, remainder = divmod(delta.seconds, 3600)
             minutes, seconds = divmod(remainder, 60)
             return render_template('event_status.html', event_status='Comming UP!', 
-                                days=days,
-                                hours=hours,
-                                minutes=minutes,
+                                days = 0 if int(duration['days']) == 0 or int(duration['days']) == "" else int(duration['days']) , 
+                                hours = 0 if int(duration['hours'])  == 0 or int(duration['hours']) == "" else int(duration['hours']) ,
+                                minutes = 0 if int(duration['minutes']) == 0 or int(duration['minutes']) == "" else int(duration['minutes'])
                                 event_id=data[0]['event_id'].replace("_", " ").title()
                                 )
             # print(f"BEFORE - {days} days, {hours} hours and {minutes} minutes until the start")
