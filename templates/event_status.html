@@ -69,28 +69,31 @@
     }
   }
 
+
   .verification_success, .data, .per_complete {
-    font-family: 'Bebas Neue', sans-serif;
-    font-weight: bold;
-    color: black;
+      font-family: 'Bebas Neue', sans-serif;
+      font-weight: bold;
+      color: black;
   }
 
   .verification_success {
-    font-size: 5vw; /* Dynamic size */
+      font-size: 5vw; /* Dynamic size */
   }
 
   .data {
-    font-size: 2vw; /* Dynamic size */
+      font-size: 2vw; /* Dynamic size */
   }
 
   .per_complete {
-    font-size: 4vw; /* Dynamic size */
-  }
+      font-size: 4vw; /* Dynamic size */
+    }
 
   .divider {
-    border-bottom: 5px dashed rgb(0, 0, 0);
-    margin-top: 20px;
-  }
+      border-bottom: 5px dashed rgb(0, 0, 0);
+      margin-top: 20px;
+    }
+
+
 </style>
 </head>
 <body>
@@ -103,7 +106,7 @@
         <h1>{{event_status}}</h1>
     </div>
 
-    <div id="processing"> hours:{{ hours }} | minutes:{{ minute }} | seconds:{{ seconds }} </div>
+    <div id="processing"> days:{{ days }} | hours:{{ hours }} | minutes:{{ minutes }} </div>
 
     <div class="data">
         <p>Event ID: {{ event_id }}</p>
