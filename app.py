@@ -153,6 +153,7 @@ def submit_request():
     else:
         return render_template('error.html', error_message='No Event data found', error_code=404), 404
 
+    #fffffffffffff
     if data:
         # write - update data
         data[int(ticket_id)]['scan_time'] = scan_time
