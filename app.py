@@ -166,7 +166,7 @@ def submit_request():
 
         if now < target_date_start:
             # Calculate difference
-            delta = target_date_start - now
+            delta = now - target_date_start
             days = delta.days
             hours, remainder = divmod(delta.seconds, 3600)
             minutes, seconds = divmod(remainder, 60)
