@@ -4,7 +4,6 @@ import requests
 import logging
 from flask import Flask, Response, request, render_template, render_template_string
 
-
 # Logger setup
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -139,8 +138,6 @@ def submit_request():
     scan_time = now.strftime(" %I:%M:%S %p | %Y-%m-%d")
     event_id = request.args.get('event_id')
     ticket_id = request.args.get('ticket_id')
-
-    logger.info("&&&&&&&&&&&&& TEST")
         
     if not event_id or not ticket_id:
             return Response("{'error': 'Missing event_id or ticket_id'}", status=400, mimetype='application/json')
@@ -153,12 +150,15 @@ def submit_request():
         data_len = len(data)-1
         # get the simple percentage of tickets scaned 
         percent_complete = (data_len/30) *100 if data_len >1 else 0
+    else:
+        return render_template('error.html', error_message='No Event data found', error_code=404), 404
 
-    # -------- insert time logic here
-        # event durration
-        duration = data[0]['event_duration']
+    if data:
+        # write - update data
+        data[ticket_id] = {"event_id":event_id, "scan_time":scan_time}
+        write_pickle(data, event_id)
 
-        # Get the current date and time, then subtract 3 hours
+        # Get the current date and time, then subtract 3 hours  
         now = datetime.now() - timedelta(hours=3)
 
         # Target date and time for comparison
@@ -166,10 +166,13 @@ def submit_request():
         target_time_start = datetime.strptime(f"{data[0]['event_date']} {data[0]['event_start_time']}", 
                                             '%B %d %Y %I:%M %p')
         target_time_end = target_time_start + timedelta(
-                                                    days = int(duration['days']), 
-                                                    hours = int(duration['days']),
-                                                    minutes = int(duration['days'])
+                                                    days = int(data[0]['days']), 
+                                                    hours = int(data[0]['hours']),
+                                                    minutes = int(data[0]['minutes'])
                                                     )
+        logger.info(f"target_date_start: {type(target_date_start)}")
+        logger.info(f"target_time_start: {type(target_time_start)}")
+        logger.info(f"target_time_end: {type(target_time_end)}")
 
         if now < target_date_start:
             # Calculate difference
@@ -177,58 +180,39 @@ def submit_request():
             days = delta.days
             hours, remainder = divmod(delta.seconds, 3600)
             minutes, seconds = divmod(remainder, 60)
-            return render_template('event_status.html', event_status='Comming UP!', 
-                                days = days , 
-                                hours = hours ,
-                                minutes = minutes,
-                                event_id=data[0]['event_id'].replace("_", " ").title()
-                                )
-        # print(f"BEFORE - {days} days, {hours} hours and {minutes} minutes until the start")
+            logger.info(f"BEFORE - {days} days, {hours} hours and {minutes} minutes until the start")
         elif now > target_time_end:
-            return render_template('event_status.html', event_status='Event Happened!', 
-                                    days="-",
-                                    hours="-",
-                                    minutes="-",
-                                    event_id=f"happened on: {data[0]['event_date']} {data[0]['event_start_time']}"
-                                    )
-            # print("EVENT HAS HAPPENED")
+            logger.info("EVENT HAS HAPPENED")
         else:
-            if target_time_start <= now <= target_time_end:
-                # -------------------------- add validate code here 
-                if data:
-                    # write - update data
-                    data[ticket_id] = {"event_id":event_id, "scan_time":scan_time}
-                else:
-                    data = {ticket_id: {"event_id":event_id, "scan_time":scan_time}}
+            logger.info("EVENT HAPPENEING")
 
-                write_pickle(data, event_id)
 
-                embed = {
-                    "title": "🚀",
-                    "description": f"Event ID: {event_id}\nTicket ID: {ticket_id}\nScan Time: {scan_time}\n\n{os.getenv('SERVER_URL')}",
-                    "color": 1543684, 
-                    "fields": [],
-                    "footer": {
-                        "text": "** use report URL to get a text listing of all activity"
-                    }
-                }
+    embed = {
+        "title": "🚀",
+        "description": f"Event ID: {event_id}\nTicket ID: {ticket_id}\nScan Time: {scan_time}\n\n{os.getenv('SERVER_URL')}",
+        "color": 1543684, 
+        "fields": [],
+        "footer": {
+            "text": "** use report URL to get a text listing of all activity"
+        }
+    }
 
-                # Wrap the embed in a payload as Discord expects
-                payload = {
-                    "embeds": [embed],
-                }
+    # Wrap the embed in a payload as Discord expects
+    payload = {
+        "embeds": [embed],
+    }
 
-                # Convert the payload to JSON and make the POST request to the webhook URL
-                response = requests.post(webhook_url, json=payload)
+    # Convert the payload to JSON and make the POST request to the webhook URL
+    response = requests.post(webhook_url, json=payload)
 
-                # Check the response
-                if response.status_code == 204:
-                    print("Embed sent successfully!")
-                else:
-                    print(f"Failed to send embed. Status code: {response.status_code} - Response: {response.text}")
+    # Check the response
+    if response.status_code == 204:
+        print("Embed sent successfully!")
     else:
-        return render_template('error.html', error_message='No Event data found', error_code=404), 404
+        print(f"Failed to send embed. Status code: {response.status_code} - Response: {response.text}")
 
+
+    return render_template('verified.html', event_id=event_id, ticket_id=ticket_id, scan_time=scan_time, percent_complete=percent_complete)
 
 @app.route('/list_events', methods=['GET'])
 def list_events_page():    
@@ -246,6 +230,7 @@ def list_event_page():
     percent_complete = (len(data) / 30) *100
     
     return render_template('list_event.html', data=data, percent_complete=percent_complete)
+
 
 
 if __name__ == '__main__':
