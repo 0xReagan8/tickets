@@ -173,7 +173,7 @@ def submit_request():
             return render_template('event_status.html', event_status='Comming UP!', 
                                 days = 0 if int(duration['days']) == 0 or int(duration['days']) == "" else int(duration['days']) , 
                                 hours = 0 if int(duration['hours'])  == 0 or int(duration['hours']) == "" else int(duration['hours']) ,
-                                minutes = 0 if int(duration['minutes']) == 0 or int(duration['minutes']) == "" else int(duration['minutes'])
+                                minutes = 0 if int(duration['minutes']) == 0 or int(duration['minutes']) == "" else int(duration['minutes']),
                                 event_id=data[0]['event_id'].replace("_", " ").title()
                                 )
             # print(f"BEFORE - {days} days, {hours} hours and {minutes} minutes until the start")
