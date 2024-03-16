@@ -159,32 +159,32 @@ def submit_request():
         data[int(ticket_id)]['percent_complete'] = percent_complete
         write_pickle(data, event_id)
 
-        embed = {
-            "title": "🚀",
-            "description": f"Event ID: {event_id}\nTicket ID: {ticket_id}\nScan Time: {scan_time}\n\n{os.getenv('SERVER_URL')}",
-            "color": 1543684, 
-            "fields": [],
-            "footer": {
-                "text": "** use report URL to get a text listing of all activity"
-            }
+    embed = {
+        "title": "🚀",
+        "description": f"Event ID: {event_id}\nTicket ID: {ticket_id}\nScan Time: {scan_time}\n\n{os.getenv('SERVER_URL')}",
+        "color": 1543684, 
+        "fields": [],
+        "footer": {
+            "text": "** use report URL to get a text listing of all activity"
         }
+    }
 
-        # Wrap the embed in a payload as Discord expects
-        payload = {
-            "embeds": [embed],
-        }
+    # Wrap the embed in a payload as Discord expects
+    payload = {
+        "embeds": [embed],
+    }
 
-        # Convert the payload to JSON and make the POST request to the webhook URL
-        response = requests.post(webhook_url, json=payload)
+    # Convert the payload to JSON and make the POST request to the webhook URL
+    response = requests.post(webhook_url, json=payload)
 
-        # Check the response
-        if response.status_code == 204:
-            print("Embed sent successfully!")
-        else:
-            print(f"Failed to send embed. Status code: {response.status_code} - Response: {response.text}")
+    # Check the response
+    if response.status_code == 204:
+        print("Embed sent successfully!")
+    else:
+        print(f"Failed to send embed. Status code: {response.status_code} - Response: {response.text}")
 
 
-        return render_template('verified.html', event_id=event_id, ticket_id=ticket_id, scan_time=scan_time, percent_complete=percent_complete)
+    return render_template('verified.html', event_id=event_id, ticket_id=ticket_id, scan_time=scan_time, percent_complete=percent_complete)
 
 
         # # Get the current date and time, then subtract 3 hours  
