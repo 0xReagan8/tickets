@@ -176,7 +176,7 @@ def submit_request():
                                 minutes = minutes,
                                 event_id=data[0]['event_id'].replace("_", " ").title()
                                 )
-            # print(f"BEFORE - {days} days, {hours} hours and {minutes} minutes until the start")
+        # print(f"BEFORE - {days} days, {hours} hours and {minutes} minutes until the start")
         elif now > target_time_end:
             return render_template('event_status.html', event_status='Event Happened!', 
                                     days="-",
