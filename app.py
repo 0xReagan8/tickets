@@ -153,7 +153,6 @@ def submit_request():
     else:
         return render_template('error.html', error_message='No Event data found', error_code=404), 404
 
-    #fffffffffffff
     if data:
         # write - update data
         data[int(ticket_id)]['scan_time'] = scan_time
@@ -168,9 +167,9 @@ def submit_request():
         target_time_start = datetime.strptime(f"{data[0]['event_date']} {data[0]['event_start_time']}", 
                                             '%B %d %Y %I:%M %p')
         target_time_end = target_time_start + timedelta(
-                                                    days = int(data[0]['days']), 
-                                                    hours = int(data[0]['hours']),
-                                                    minutes = int(data[0]['minutes'])
+                                                    days = int(data[0]['event_duration']['days']), 
+                                                    hours = int(data[0]['event_duration']['hours']),
+                                                    minutes = int(data[0]['event_duration']['minutes'])
                                                     )
         logger.info(f"target_date_start: {type(target_date_start)}")
         logger.info(f"target_time_start: {type(target_time_start)}")
