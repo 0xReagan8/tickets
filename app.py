@@ -159,9 +159,9 @@ def submit_request():
         target_time_start = datetime.strptime(f"{data[0]['event_date']} {data[0]['event_start_time']}", 
                                             '%B %d %Y %I:%M %p')
         target_time_end = target_time_start + timedelta(
-                                                    days = 0 if int(duration['days']) == 0 or int(duration['days']) == "" else int(duration['days']) , 
-                                                    hours = 0 if int(duration['hours'])  == 0 or int(duration['hours']) == "" else int(duration['hours']) ,
-                                                    minutes = 0 if int(duration['minutes']) == 0 or int(duration['minutes']) == "" else int(duration['minutes'])
+                                                    days = int(duration['days']), 
+                                                    hours = int(duration['days']),
+                                                    minutes = int(duration['days'])
                                                     )
 
         if now < target_date_start:
