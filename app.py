@@ -137,8 +137,8 @@ def submit_request():
     now = datetime.now()
     scan_time = now.strftime(" %I:%M:%S %p | %Y-%m-%d")
     event_id = request.args.get('event_id')
-    ticket_id = request.args.get('ticket_id')
-        
+    ticket_id = request.args.get('ticket_id') # ticket_id is the ticket_number - refactor ...
+    
     if not event_id or not ticket_id:
             return Response("{'error': 'Missing event_id or ticket_id'}", status=400, mimetype='application/json')
 
@@ -155,7 +155,8 @@ def submit_request():
 
     if data:
         # write - update data
-        data[ticket_id] = {"event_id":event_id, "scan_time":scan_time}
+        data[int(ticket_id)]['scan_time'] = scan_time
+        data[int(ticket_id)]['percent_complete'] = percent_complete
         write_pickle(data, event_id)
 
         # Get the current date and time, then subtract 3 hours  
