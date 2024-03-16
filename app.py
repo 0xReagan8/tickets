@@ -1,8 +1,13 @@
 import os
 from datetime import datetime, timedelta
 import requests
+import logging
 from flask import Flask, Response, request, render_template, render_template_string
 
+
+# Logger setup
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 app = Flask(__name__)
 
@@ -134,6 +139,8 @@ def submit_request():
     scan_time = now.strftime(" %I:%M:%S %p | %Y-%m-%d")
     event_id = request.args.get('event_id')
     ticket_id = request.args.get('ticket_id')
+
+    logger.info("&&&&&&&&&&&&& TEST")
         
     if not event_id or not ticket_id:
             return Response("{'error': 'Missing event_id or ticket_id'}", status=400, mimetype='application/json')
